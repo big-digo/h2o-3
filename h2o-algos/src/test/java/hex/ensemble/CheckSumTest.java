@@ -42,6 +42,7 @@ public class CheckSumTest extends TestUtil {
             DKV.put(train);
             int resp = train.find("response");
             Scope.track(train.replace(resp, train.vecs()[resp].toCategoricalVec()));
+            DKV.put(train._key,train);
 
             //Build GBM
             parmsGbm._train = train._key;
