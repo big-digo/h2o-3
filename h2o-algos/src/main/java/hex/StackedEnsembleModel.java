@@ -30,10 +30,10 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
   public String responseColumn = null;
   private NonBlockingHashSet<String> names = null;  // keep columns as a set for easier comparison
   private NonBlockingHashSet<String> ignoredColumns = null;  // keep ignored_columns as a set for easier comparison
-  public int nfolds = -1;
-  public Parameters.FoldAssignmentScheme fold_assignment;
-  public String fold_column;
-  public long seed = -1;
+  public int nfolds = -1; //From 1st base model
+  public Parameters.FoldAssignmentScheme fold_assignment; //From 1st base model
+  public String fold_column; //From 1st base model
+  public long seed = -1; //From 1st base model
 
 
   // TODO: add a separate holdout dataset for the ensemble
