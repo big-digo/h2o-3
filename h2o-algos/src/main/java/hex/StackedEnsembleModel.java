@@ -251,11 +251,12 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
         Log.warn("Failed to find base model; skipping: " + k);
         continue;
       }
+      if(!aModel.isSupervised()){
+        throw new H2OIllegalArgumentException("Base model is not supervised: " + aModel._key.toString());
+      }
 
       if (beenHere) {
-        // check that the base models are all consistent
-        if (_output._isSupervised ^ aModel.isSupervised())
-          throw new H2OIllegalArgumentException("Base models are inconsistent: there is a mix of supervised and unsupervised models: " + Arrays.toString(_parms._base_models));
+        // check that the base models are all consistent with first based model
 
         if (modelCategory != aModel._output.getModelCategory())
           throw new H2OIllegalArgumentException("Base models are inconsistent: there is a mix of different categories of models: " + Arrays.toString(_parms._base_models));
@@ -327,7 +328,6 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
         // giving us inconsistencies.
       } else {
         // !beenHere: this is the first base_model
-        _output._isSupervised = aModel.isSupervised();
         this.modelCategory = aModel._output.getModelCategory();
         this._dist = new Distribution(distributionFamily(aModel));
         _output._domains = Arrays.copyOf(aModel._output._domains, aModel._output._domains.length);
