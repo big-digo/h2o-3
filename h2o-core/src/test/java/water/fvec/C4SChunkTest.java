@@ -126,4 +126,32 @@ public class C4SChunkTest extends TestUtil {
       Assert.assertTrue(Arrays.equals(cc._mem, cc2._mem));
     }
   }
+
+  @Test
+  public void test_precision() {
+    for (final int stepsz : new int[]{1/*,7, 17, 23, 31*/}) {
+      int nvals = (Short.MAX_VALUE - Short.MIN_VALUE + 200) / stepsz;
+      int[] exponents = new int[]{/*-32,*/-16, -8, -6, -4, -2, -1};
+      long[] biases = new long[]{-1234567, -12345, -1234, -1, 0, 1, 1234, 12345, 1234567};
+      for (int exponent : exponents) {
+        for (long bias : biases) {
+          NewChunk nc = new NewChunk(null, 0);
+          double[] expected = new double[nvals];
+          int j = 0;
+          for (int i = Short.MIN_VALUE -100; i < Short.MAX_VALUE + 100; i += stepsz) {
+            nc.addNum(bias + i, exponent);
+            expected[j++] = Double.parseDouble((i + bias) + "e" + exponent);
+          }
+          assert j == nvals;
+          Chunk c = nc.compress();
+          if (!(c instanceof C4SChunk))
+            System.out.println("exp = " + exponent + " b = " + bias + " c = " + c.getClass().getSimpleName());
+          Assert.assertTrue(c instanceof C4SChunk);
+          for (int i = 0; i < expected.length; ++i) {
+            Assert.assertEquals(expected[i], c.atd(i), 0);
+          }
+        }
+      }
+    }
+  }
 }
