@@ -18,7 +18,7 @@ public abstract class CSChunk extends Chunk {
     _start = -1;
     set_len((_mem.length - _OFF) >> szLog);
     _bias = bias;
-    UnsafeUtils.set8d(_mem, 0, bias);
+    UnsafeUtils.set8(_mem, 0, bias);
     UnsafeUtils.set4(_mem, 8, scale);
     _isDecimal = scale < 0;
     _scale = PrettyPrint.pow(1,Math.abs(scale));
