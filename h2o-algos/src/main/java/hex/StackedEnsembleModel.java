@@ -25,11 +25,10 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
 
   // common parameters for the base models:
   public ModelCategory modelCategory;
-  public long trainingFrameChecksum = -1;
+  public long trainingFrameRows = -1;
 
   public String responseColumn = null;
   private NonBlockingHashSet<String> names = null;  // keep columns as a set for easier comparison
-  private NonBlockingHashSet<String> ignoredColumns = null;  // keep ignored_columns as a set for easier comparison
   public int nfolds = -1; //From 1st base model
   public Parameters.FoldAssignmentScheme fold_assignment; //From 1st base model
   public String fold_column; //From 1st base model
@@ -243,7 +242,7 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
 
     Model aModel = null;
     boolean beenHere = false;
-    trainingFrameChecksum = _parms.train().checksum();
+    trainingFrameRows = _parms.train().numRows();
 
     for (Key<Model> k : _parms._base_models) {
       aModel = DKV.getGet(k);
@@ -263,19 +262,13 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
 
         // NOTE: if we loosen this restriction and fold_column is set add a check below.
         Frame aTrainingFrame = aModel._parms.train();
-        if (trainingFrameChecksum != aTrainingFrame.checksum() && !this._parms._is_cv_model)
-          throw new H2OIllegalArgumentException("Base models are inconsistent: they use different training frames.  Found checksums: " + trainingFrameChecksum + " and: " + aTrainingFrame.checksum() + ".");
+        if (trainingFrameRows != aTrainingFrame.numRows() && !this._parms._is_cv_model)
+          throw new H2OIllegalArgumentException("Base models are inconsistent: they use different size(number of rows) training frames.  Found number of rows: " + trainingFrameRows + " and: " + aTrainingFrame.checksum() + ".");
 
         NonBlockingHashSet<String> aNames = new NonBlockingHashSet<>();
         aNames.addAll(Arrays.asList(aModel._output._names));
         if (! aNames.equals(this.names))
           throw new H2OIllegalArgumentException("Base models are inconsistent: they use different column lists.  Found: " + this.names + " and: " + aNames + ".");
-
-        NonBlockingHashSet<String> anIgnoredColumns = new NonBlockingHashSet<>();
-        if (null != aModel._parms._ignored_columns)
-          anIgnoredColumns.addAll(Arrays.asList(aModel._parms._ignored_columns));
-        if (! anIgnoredColumns.equals(this.ignoredColumns))
-          throw new H2OIllegalArgumentException("Base models are inconsistent: they use different ignored_column lists.  Found: " + this.ignoredColumns + " and: " + aModel._parms._ignored_columns + ".");
 
         if (! responseColumn.equals(aModel._parms._response_column))
           throw new H2OIllegalArgumentException("Base models are inconsistent: they use different response columns.  Found: " + responseColumn + " and: " + aModel._parms._response_column + ".");
@@ -337,10 +330,6 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
         _output.setNames(aModel._output._names);
         this.names = new NonBlockingHashSet<>();
         this.names.addAll(Arrays.asList(aModel._output._names));
-
-        this.ignoredColumns = new NonBlockingHashSet<>();
-        if (null != aModel._parms._ignored_columns)
-          this.ignoredColumns.addAll(Arrays.asList(aModel._parms._ignored_columns));
 
         responseColumn = aModel._parms._response_column;
 
