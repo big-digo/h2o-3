@@ -265,16 +265,12 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
         if (trainingFrameRows != aTrainingFrame.numRows() && !this._parms._is_cv_model)
           throw new H2OIllegalArgumentException("Base models are inconsistent: they use different size(number of rows) training frames.  Found number of rows: " + trainingFrameRows + " and: " + aTrainingFrame.checksum() + ".");
 
-        NonBlockingHashSet<String> aNames = new NonBlockingHashSet<>();
-        aNames.addAll(Arrays.asList(aModel._output._names));
-        if (! aNames.equals(this.names))
-          throw new H2OIllegalArgumentException("Base models are inconsistent: they use different column lists.  Found: " + this.names + " and: " + aNames + ".");
-
         if (! responseColumn.equals(aModel._parms._response_column))
           throw new H2OIllegalArgumentException("Base models are inconsistent: they use different response columns.  Found: " + responseColumn + " and: " + aModel._parms._response_column + ".");
 
-        if (_output._domains.length != aModel._output._domains.length)
-          throw new H2OIllegalArgumentException("Base models are inconsistent: there is a mix of different numbers of domains (categorical levels): " + Arrays.toString(_parms._base_models));
+        // Commenting this out for now: Fails if we use different sets of predictors in base models
+        //if (_output._domains.length != aModel._output._domains.length)
+        //  throw new H2OIllegalArgumentException("Base models are inconsistent: there is a mix of different numbers of domains (categorical levels): " + Arrays.toString(_parms._base_models));
 
         // TODO: we currently require xval; loosen this iff we add a separate holdout dataset for the ensemble
 
