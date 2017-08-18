@@ -268,10 +268,6 @@ public class StackedEnsembleModel extends Model<StackedEnsembleModel,StackedEnse
         if (! responseColumn.equals(aModel._parms._response_column))
           throw new H2OIllegalArgumentException("Base models are inconsistent: they use different response columns.  Found: " + responseColumn + " and: " + aModel._parms._response_column + ".");
 
-        // Commenting this out for now: Fails if we use different sets of predictors in base models
-        //if (_output._domains.length != aModel._output._domains.length)
-        //  throw new H2OIllegalArgumentException("Base models are inconsistent: there is a mix of different numbers of domains (categorical levels): " + Arrays.toString(_parms._base_models));
-
         // TODO: we currently require xval; loosen this iff we add a separate holdout dataset for the ensemble
 
         if (aModel._parms._fold_assignment != fold_assignment) {
