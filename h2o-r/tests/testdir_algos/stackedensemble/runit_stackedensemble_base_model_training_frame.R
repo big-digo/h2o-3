@@ -35,7 +35,8 @@ stackedensemble.base_model_training_frame.test <- function() {
   # Train & Cross-validate a RF
   my_rf <- h2o.randomForest(x = x[14:20],
                             y = y, 
-                            training_frame = train, 
+                            training_frame = train,
+                            distribution = "bernoulli",
                             ntrees = 10, 
                             nfolds = nfolds, 
                             fold_assignment = "Modulo",
