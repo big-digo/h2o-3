@@ -30,7 +30,7 @@ public class C2SChunk extends CSChunk {
 
   @Override public double [] getDoubles(double [] vals, int from, int to, double NA){
     for(int i = from; i < to; i++)
-      vals[i-from] = getD(getMantissa(i),C2Chunk._NA);
+      vals[i-from] = getD(getMantissa(i),C2Chunk._NA,NA);
     return vals;
   }
 

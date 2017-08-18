@@ -26,8 +26,10 @@ public abstract class CSChunk extends Chunk {
   public final double scale() { return _isDecimal?1.0/_scale:_scale; }
   @Override public final byte precision() { return (byte)Math.max(-Math.log10(scale()),0); }
 
-  protected final double getD(int x, int NA){
-    if(x == NA) return Double.NaN;
+  protected final double getD(int x, int NA){return getD(x,NA,Double.NaN);}
+
+  protected final double getD(int x, int NA, double naImpute){
+    if(x == NA) return naImpute;
     double y = _bias + (double)x;
     return _isDecimal?y/_scale:y*_scale;
   }

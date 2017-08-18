@@ -28,7 +28,7 @@ public class C4SChunk extends CSChunk {
 
   @Override public double [] getDoubles(double [] vals, int from, int to, double NA){
     for(int i = from; i < to; i++)
-      vals[i-from] = getD(getMantissa(i),C4Chunk._NA);
+      vals[i-from] = getD(getMantissa(i),C4Chunk._NA,NA);
     return vals;
   }
 

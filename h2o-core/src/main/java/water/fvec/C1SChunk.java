@@ -15,8 +15,6 @@ public final class C1SChunk extends CSChunk {
   @Override protected final boolean isNA_impl( int i ) { return (0xFF&_mem[i+_OFF]) == C1Chunk._NA; }
   @Override boolean setNA_impl(int idx) { _mem[idx+_OFF] = (byte)C1Chunk._NA; return true; }
 
-
-
   @Override
   protected boolean set_impl(int i, double x) {
     if(Double.isNaN(x)) return setNA_impl(i);
@@ -37,7 +35,7 @@ public final class C1SChunk extends CSChunk {
   @Override
   public double [] getDoubles(double [] vals, int from, int to, double NA){
     for(int i = from; i < to; ++i)
-      vals[i-from] = getD(0xFF&_mem[_OFF+i],C1Chunk._NA);
+      vals[i-from] = getD(0xFF&_mem[_OFF+i],C1Chunk._NA,NA);
     return vals;
   }
   /**
